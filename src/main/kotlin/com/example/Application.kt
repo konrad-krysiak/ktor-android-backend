@@ -5,26 +5,40 @@ import com.example.routes.*
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
+import io.ktor.routing.*
+import io.ktor.serialization.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.event.Level
 
 fun main() {
 
-    Database.connect("jdbc:sqlite:file:test?mode=memory&cache=shared", "org.sqlite.JDBC")
-
+    Database.connect("jdbc:sqlite:./data/data.db", "org.sqlite.JDBC")
+//    Database.connect("jdbc:sqlite:file:test?mode=memory&cache=shared", "org.sqlite.JDBC")
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+        install(CallLogging){
+            level = Level.DEBUG
+        }
+
         install(ContentNegotiation) {
             gson {
                 setPrettyPrinting()
                 disableHtmlEscaping()
             }
         }
+
+        routing {
+            trace { application.log.trace(it.buildText()) }
+        }
+
+        DatabaseInitializer.eraseSchema()
+        DatabaseInitializer.createSchema()
+
         registerCustomerRoutes()
         registerOrderRoutes()
-        registerCoffeeRoutes()
-        registerEnergyDrinkRoutes()
-        registerYerbaRoutes()
+        registerOrderItemsRoutes()
         //configureRouting()
     }.start(wait = true)
 }

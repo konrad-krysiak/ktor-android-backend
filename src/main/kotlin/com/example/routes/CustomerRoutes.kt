@@ -1,12 +1,16 @@
 package com.example.routes
 
 import com.example.models.Customer
-import com.example.models.customerStorage
+import com.example.models.OrderItem
+//import com.example.models.customerStorage
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+
+val customerStorage = ArrayList<Int>()
+
 
 fun Route.customerRouting() {
     route("/customer") {
@@ -23,24 +27,17 @@ fun Route.customerRouting() {
                 status = HttpStatusCode.BadRequest
             )
             val customer =
-                customerStorage.find { it.id == id } ?: return@get call.respondText(
-                    "No customer with id $id",
-                    status = HttpStatusCode.NotFound
-                )
+                call.respondText(" correctly", status = HttpStatusCode.Accepted)
             call.respond(customer)
         }
         post {
             val customer = call.receive<Customer>()
-            customerStorage.add(customer)
+            customerStorage.add(1)
             call.respondText("Customer stored successfully", status = HttpStatusCode.Created)
         }
         delete("{id}") {
             val id = call.parameters["id"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
-            if (customerStorage.removeIf { it.id == id }) {
-                call.respondText("Customer removed correctly", status = HttpStatusCode.Accepted)
-            } else {
-                call.respondText("Not Found", status = HttpStatusCode.NotFound)
-            }
+            call.respondText("Customer removed correctly", status = HttpStatusCode.Accepted)
         }
     }
 }

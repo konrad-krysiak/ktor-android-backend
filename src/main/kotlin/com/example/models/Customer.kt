@@ -1,12 +1,16 @@
 package com.example.models
 
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.Table
 
-val customerStorage = mutableListOf<Customer>(
-    Customer("1", "Konrad", "K", "konrad@1"),
-    Customer("2", "Ala", "T", "ala@1"),
-    Customer("3", "Kuba", "K", "kuba@1")
-)
+object Customers : Table("customers") {
+    val id: Column<Int> = integer("id").autoIncrement()
+    val name: Column<String> = varchar("name", 100)
+
+    override val primaryKey = PrimaryKey(id, name = "PK_Customers")
+}
 
 @Serializable
 data class Customer(
