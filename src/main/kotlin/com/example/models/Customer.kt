@@ -1,21 +1,30 @@
 package com.example.models
 
-import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 
 object Customers : Table("customers") {
     val id: Column<Int> = integer("id").autoIncrement()
     val name: Column<String> = varchar("name", 100)
-
+    val surname: Column<String> = varchar("surname", 100)
+    val email: Column<String> = varchar("email", 50).uniqueIndex()
     override val primaryKey = PrimaryKey(id, name = "PK_Customers")
 }
 
-@Serializable
 data class Customer(
-    val id: String,
-    val firstName: String,
-    val lastName: String,
+    val id: Int,
+    val name: String,
+    val surname: String,
     val email: String
 )
+{
+    companion object {
+        fun fromRow(resultRow: ResultRow) = Customer(
+            id = resultRow[Customers.id],
+            name = resultRow[Customers.name],
+            surname = resultRow[Customers.surname],
+            email = resultRow[Customers.surname]
+        )
+    }
+}

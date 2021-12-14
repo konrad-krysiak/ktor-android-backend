@@ -18,9 +18,6 @@ fun main() {
     Database.connect("jdbc:sqlite:./data/data.db", "org.sqlite.JDBC")
 //    Database.connect("jdbc:sqlite:file:test?mode=memory&cache=shared", "org.sqlite.JDBC")
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
-        install(CallLogging){
-            level = Level.DEBUG
-        }
 
         install(ContentNegotiation) {
             gson {
@@ -35,6 +32,7 @@ fun main() {
 
         DatabaseInitializer.eraseSchema()
         DatabaseInitializer.createSchema()
+        DatabaseInitializer.feedDatabase()
 
         registerCustomerRoutes()
         registerOrderRoutes()
