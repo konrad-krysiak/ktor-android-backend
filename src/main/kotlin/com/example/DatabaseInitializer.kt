@@ -51,11 +51,27 @@ object DatabaseInitializer {
                 OrderItem(2, 1, 3, 2),
                 OrderItem(1, 2, 1, 8),
             )
-            OrderItems.batchInsert(orderitems) { item: OrderItem ->
+            OrderItems.batchInsert(orderitems) { item ->
                 this[OrderItems.order_id] = item.order_id
                 this[OrderItems.category_id] = item.category_id
                 this[OrderItems.product_id] = item.product_id
                 this[OrderItems.amount] = item.amount
+            }
+
+            val products = listOf(
+                Product(1, "Black Coffee", 11.50, 1),
+                Product(2, "Red coffee", 9.70, 1),
+                Product(3, "Ice coffee", 12.00, 1),
+                Product(4, "Starbucks coffee", 11.00, 1),
+                Product(5, "Ice tea", 7.00, 2),
+                Product(6, "Green tea", 6.00, 2),
+                Product(7, "Black tea", 5.50, 2)
+            )
+            Products.batchInsert(products) { i ->
+                this[Products.id] = i.id
+                this[Products.name] = i.name
+                this[Products.price] = i.price
+                this[Products.category_id] = i.category_id
             }
         }
     }

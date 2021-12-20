@@ -8,7 +8,7 @@ object Customers : Table("customers") {
     val id: Column<Int> = integer("id").autoIncrement()
     val name: Column<String> = varchar("name", 100)
     val surname: Column<String> = varchar("surname", 100)
-    val email: Column<String> = varchar("email", 50).uniqueIndex()
+    val email: Column<String> = varchar("email", 50)
     override val primaryKey = PrimaryKey(id, name = "PK_Customers")
 }
 

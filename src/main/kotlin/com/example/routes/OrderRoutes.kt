@@ -14,21 +14,22 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 
 fun Route.orderRouting() {
-    route("/order") {
+    route("/orders") {
         get {
-            val id = call.parameters.get("id")?.toInt()
-            if(id == null) {
-                val orders = transaction {
-                    Orders.selectAll().map{ Order.fromRow(it) }
-                }
-                call.respond(orders)
-            } else {
-                val order = transaction {
-                    Orders.select { Orders.id eq id }.map { Order.fromRow(it) }
-                }
-                call.respond(order)
+            val orders = transaction {
+                Orders.selectAll().map{ Order.fromRow(it) }
             }
+            call.respond(orders)
         }
+
+        get("{id}") {
+            val id = call.parameters["id"]?.toInt() ?: return@get call.respond(HttpStatusCode.BadRequest, "No id parameter provided.")
+            val result = transaction {
+                Orders.select { Orders.id eq id }.map { Order.fromRow(it) }
+            }
+            call.respond(result)
+        }
+
         post {
             val order = call.receive<Order>()
             val id = transaction {
@@ -38,7 +39,7 @@ fun Route.orderRouting() {
             }
             call.respond(id)
         }
-        
+
         delete("{id}") {
             val id = call.parameters["id"]?.toInt() ?: return@delete call.respond(HttpStatusCode.BadRequest, "No id parameter provided.")
             val success = transaction {

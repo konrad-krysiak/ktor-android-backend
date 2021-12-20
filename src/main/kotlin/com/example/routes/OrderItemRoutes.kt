@@ -17,26 +17,12 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Route.orderItemsRouting() {
-    route("orderitem") {
+    route("orderitems") {
         get{
-            val order_id = call.parameters.get("order_id")
-            val category_id = call.parameters.get("category_id")
-            val product_id = call.parameters.get("product_id")
-            if(order_id == null || category_id == null || product_id == null) {
-                val orderitems = transaction {
-                    OrderItems.selectAll().map { OrderItem.fromRow(it) }
-                }
-                call.respond(orderitems)
-            } else {
-                val orderitem = transaction {
-                    OrderItems.select (
-                         (OrderItems.order_id eq order_id.toInt()) and
-                                (OrderItems.category_id eq category_id.toInt()) and
-                                (OrderItems.product_id eq product_id.toInt())
-                    ).map { OrderItem.fromRow(it) }
-                }
-                call.respond(orderitem)
+            val orderitems = transaction {
+                OrderItems.selectAll().map { OrderItem.fromRow(it) }
             }
+            call.respond(orderitems)
         }
 
         post {

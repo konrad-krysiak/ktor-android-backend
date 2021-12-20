@@ -10,15 +10,19 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Route.customerRouting() {
-    route("/customer") {
+    route("/customers") {
+        get {
+            val customers = transaction {
+                Customers.selectAll().map { Customer.fromRow(it) }
+            }
+            call.respond(customers)
+        }
+
         get("{id}") {
             val id = call.parameters["id"]?.toInt() ?: return@get call.respond(HttpStatusCode.BadRequest, "No parameters found.")
             val customer = transaction {
@@ -26,12 +30,7 @@ fun Route.customerRouting() {
             }
             call.respond(customer)
         }
-        get {
-            val customers = transaction {
-                Customers.selectAll().map { Customer.fromRow(it) }
-            }
-            call.respond(customers)
-        }
+
         post {
             val customer = call.receive<Customer>()
             val id = transaction {
@@ -43,6 +42,7 @@ fun Route.customerRouting() {
             }
             call.respond(id)
         }
+
         delete("{id}") {
             val id = call.parameters["id"]?.toInt() ?: return@delete call.respond(HttpStatusCode.BadRequest, "No id parameter provided.")
             val success = transaction {
