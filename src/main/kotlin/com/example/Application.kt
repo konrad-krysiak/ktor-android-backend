@@ -39,6 +39,5 @@ fun main() {
         registerOrderItemsRoutes()
         registerProductRoutes()
         registerUtilRoutes()
-        //configureRouting()
     }.start(wait = true)
 }
