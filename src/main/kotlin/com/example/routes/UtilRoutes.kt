@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Route.utilRouting() {
 
-    get("/customerorders/{id}") {
+    get("/orders/customers/{id}") {
         val id = call.parameters["id"]?.toInt() ?: return@get call.respond(HttpStatusCode.BadRequest, "No id parameter provided.")
         val orders = transaction {
             (Orders innerJoin Customers).slice(Orders.id, Orders.customer_id).select { Orders.customer_id eq id }.map {

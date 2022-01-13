@@ -65,7 +65,12 @@ object DatabaseInitializer {
                 Product(4, "Starbucks coffee", 11.00, 1),
                 Product(5, "Ice tea", 7.00, 2),
                 Product(6, "Green tea", 6.00, 2),
-                Product(7, "Black tea", 5.50, 2)
+                Product(7, "Black tea", 5.50, 2),
+                Product(8, "Lipton Tea", 2.10, 2),
+                Product(9, "Puertorico Tea", 6.99, 2),
+                Product(10, "Biedronka tea", 0.99, 2),
+                Product(11, "Jacobs coffee", 7.50, 1),
+                Product(12, "Nestle Coffee", 5.99, 1)
             )
             Products.batchInsert(products) { i ->
                 this[Products.id] = i.id
