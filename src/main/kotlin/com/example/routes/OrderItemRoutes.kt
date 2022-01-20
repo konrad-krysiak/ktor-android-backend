@@ -1,9 +1,6 @@
 package com.example.routes
 
-import com.example.models.Customer
-import com.example.models.Customers
-import com.example.models.OrderItem
-import com.example.models.OrderItems
+import com.example.models.*
 import com.example.models.OrderItems.order_id
 //import com.example.models.customerStorage
 import io.ktor.application.*

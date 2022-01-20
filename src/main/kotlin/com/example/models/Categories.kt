@@ -3,6 +3,7 @@ package com.example.models
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 
 
@@ -18,3 +19,11 @@ data class Category (
     val id: Int,
     val name: String
 )
+{
+    companion object {
+        fun fromRow(resultRow: ResultRow) = Category(
+            id = resultRow[Categories.id],
+            name = resultRow[Categories.name]
+        )
+    }
+}

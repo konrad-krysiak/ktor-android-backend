@@ -5,6 +5,7 @@ import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -13,12 +14,10 @@ fun Route.utilRouting() {
 
     get("/orders/customers/{id}") {
         val id = call.parameters["id"]?.toInt() ?: return@get call.respond(HttpStatusCode.BadRequest, "No id parameter provided.")
-        val orders = transaction {
-            (Orders innerJoin Customers).slice(Orders.id, Orders.customer_id).select { Orders.customer_id eq id }.map {
-                Order.fromRow(it)
-            }
+        val result = transaction {
+            Orders.select { Orders.customer_id eq id }.map { Order.fromRow(it) }
         }
-        call.respond(orders)
+        call.respond(result)
     }
 
     get("/orderitems/orders/{id}") {
@@ -44,18 +43,6 @@ fun Route.utilRouting() {
         }
         call.respond(result)
     }
-
-    get("/orders/customers/{id}") {
-        val id = call.parameters["id"]?.toInt() ?: return@get call.respond(HttpStatusCode.BadRequest, "No id parameter provided.")
-        val result = transaction {
-            Orders.select { Orders.customer_id eq id }.map { Order.fromRow(it) }
-        }
-        call.respond(result)
-    }
-
-
-
-
 
 }
 

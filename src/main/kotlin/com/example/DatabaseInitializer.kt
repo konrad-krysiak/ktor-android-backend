@@ -22,9 +22,14 @@ object DatabaseInitializer {
 
     fun feedDatabase() {
         transaction {
-            Categories.insert { it[name] = "Coffee" }
-            Categories.insert { it[name] = "Tea" }
-
+            val categories = listOf(
+                Category(1, "Coffee"),
+                Category(2, "Tea")
+            )
+            Categories.batchInsert(categories) { category: Category ->
+                this[Categories.id] = category.id
+                this[Categories.name] = category.name
+            }
             val customers = listOf(
                 Customer(1, "Konrad", "K", "asd"),
                 Customer(2, "Ala", "T", "asd2"),

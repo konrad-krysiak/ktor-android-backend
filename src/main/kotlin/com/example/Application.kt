@@ -36,5 +36,6 @@ fun main() {
         registerOrderItemsRoutes()
         registerProductRoutes()
         registerUtilRoutes()
+        registerCategoryRoutes()
     }.start(wait = true)
 }
